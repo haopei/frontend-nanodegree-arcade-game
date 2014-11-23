@@ -1,3 +1,5 @@
+// Basically an image loading and caching system
+
 (function() {
     var resourceCache = {};
     var loading = [];
@@ -48,6 +50,7 @@
         return ready;
     }
 
+    // pushes function to to readyCallBacks list
     function onReady(func) {
         readyCallbacks.push(func);
     }
