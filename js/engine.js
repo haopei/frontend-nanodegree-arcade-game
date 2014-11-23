@@ -139,9 +139,11 @@ var Engine = (function(global) {
 			rival.speed = 0;
 			rival.x = 160;
 			rival.y = 70;
+			player.sprite = player.loseSprite;
+			player.x = 303;
+			player.y = 200;
 			heart.hide();
 			princess.sprite = 'images/princess-win.png';
-			player.sprite = player.loseSprite;
 			console.log("LOSE");
 		}		
 
