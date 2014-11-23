@@ -230,7 +230,7 @@ var hero = new Hero(HERO_START_X, HERO_START_Y, HERO_START_LIFE);
 var princess = new Princess;
 var rival = new Rival;
 
-document.addEventListener('keyup', function(e) {
+document.addEventListener('keydown', function(e) {
 	var allowedKeys = {
 		37: 'left',
 		38: 'up',

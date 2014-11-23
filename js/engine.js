@@ -117,6 +117,9 @@ var Engine = (function(global) {
 
 	function youWin() {
 		if (princess.heartCount === HEARTS_TO_WIN) {
+			if (rival.x < 400) {
+				rival.x = hero.x + 100;
+			}			
 			allBugs = [];
 			heart.hide();
 			hero.x = 160;
@@ -125,7 +128,6 @@ var Engine = (function(global) {
 			princess.sprite = 'images/princess-win.png';
 			rival.sprite = rival.loseSprite;
 			rival.speed = 0;
-			ctx.fillText("You saved your love!", 500, 500);
 		}
 	}
 
