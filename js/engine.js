@@ -1,17 +1,3 @@
-// game engine
-// sets up canvas
-// sets up rendering with time delta to ensure smoothness
-// draws images on screen
-// draws images over and over in the canvas everytime it updates
-// When you are moving your character,
-//      you are actually changing the data,
-//      and the engine redraws this data
-// Gets data of player/enemy objects and draws them 
-
-// focus on update() where you change data, and therefore the screen is drawn
-// focus on properties to be written of objects
-// how different events change that data
-
 var Engine = (function(global) {
 	var doc = global.document,
 			win = global.window,
