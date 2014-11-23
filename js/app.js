@@ -1,18 +1,17 @@
-var ENEMY_SPEEDS = [150,200,250,300,350,400,450],
-		ENEMY_START_Y = [145,230, 315, 395],
-		ENEMY_START_X = 0,
-		PLAYER_START_LIFE = 5,
-		PLAYER_START_X = 204,
-		PLAYER_START_Y = 488,
-		PLAYER_MOVE_Y = 83,
-		PLAYER_MOVE_X = 101,
+var BUG_SPEEDS = [150,200,250,300,350,400,450, 1000, 1000],
+		BUG_START_Y = [145,230, 315, 395],
+		BUG_START_X = 0,
+		HERO_START_LIFE = 3,
+		HERO_START_X = 204,
+		HERO_START_Y = 488,
+		HERO_MOVE_X = 101,
+		HERO_MOVE_Y = 83,
+		RIVAL_START_X = 606,
+		RIVAL_START_Y = 70,
+		RIVAL_SPEED = 17,
 		HEART_X = [101, 202, 303, 404, 505],
 		HEART_Y = [160, 240, 320, 400],
-		HEARTS_TO_WIN = 3;		
-
-		// GEM_X = [101, 202, 303, 404, 505],
-		// GEM_Y = [50, 133, 216, 299, 382];
-
+		HEARTS_TO_WIN = 3;
 
 var randomNumber = function(range) {
 	return Math.floor(Math.random()*range);
@@ -65,14 +64,14 @@ var Rival = function() {
 	this.sprite = 'images/rival.png';
 	this.trueIntentionSprite = 'images/rival-true-intention.png';
 	this.loseSprite = 'images/rival-lose.png';
-	this.x = 606;
-	this.y = 70;
-	this.speed = 20;
+	this.x = RIVAL_START_X;
+	this.y = RIVAL_START_Y;
+	this.speed = RIVAL_SPEED;
 }
 
 Rival.prototype.render = function() {
 	var sprite = this.sprite;
-	if (this.x < 290) {
+	if (this.x < 320) {
 		sprite = this.trueIntentionSprite;
 	} 
 	if (princess.heartCount === HEARTS_TO_WIN) {
@@ -85,37 +84,43 @@ Rival.prototype.update = function(dt) {
 	this.x = this.x - this.speed * dt;
 }
 
-// Enemy
-var Enemy = function() {
+Rival.prototype.resetPosition = function() {
+	this.x = RIVAL_START_X;
+	this.y = RIVAL_START_Y;
+	this.speed = RIVAL_SPEED;
+}
+
+// Bug
+var Bug = function() {
 	this.sprite = 'images/enemy-bug.png';
-	this.x = ENEMY_START_X;
+	this.x = BUG_START_X;
 	this.y = this.StartPosY;
 	this.speed = this.randomSpeed();
 }
 
-Enemy.prototype.StartPosY = function() {
-	return ENEMY_START_Y[randomNumber(ENEMY_START_Y.length)];
+Bug.prototype.StartPosY = function() {
+	return BUG_START_Y[randomNumber(BUG_START_Y.length)];
 }
 
-Enemy.prototype.randomSpeed = function() {
-	return ENEMY_SPEEDS[randomNumber(ENEMY_SPEEDS.length)];
+Bug.prototype.randomSpeed = function() {
+	return BUG_SPEEDS[randomNumber(BUG_SPEEDS.length)];
 }
 
-Enemy.prototype.update = function(dt) {
+Bug.prototype.update = function(dt) {
 	if (this.x > 707) {
-		this.x = ENEMY_START_X;
+		this.x = BUG_START_X;
 		this.y = this.StartPosY();
 		this.speed = this.randomSpeed();
 	}
 	this.x = this.x + this.speed * dt; 
 }
 
-Enemy.prototype.render = function() {
+Bug.prototype.render = function() {
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// Player
-var Player = function(x,y,life) {
+// Hero
+var Hero = function(x,y,life) {
 	this.sprite = 'images/hero.png';
 	this.loseSprite = 'images/hero-lose.png';
 	this.lifeSprite = 'images/hero-small.png';
@@ -125,14 +130,15 @@ var Player = function(x,y,life) {
 	this.hasHeart = false;
 }
 
-Player.prototype.resetPosition = function() {
-	this.x = PLAYER_START_X;
-	this.y = PLAYER_START_Y;
-	this.hasHeart = false;
+Hero.prototype.resetPosition = function() {
 	this.sprite = 'images/hero.png';
+	this.x = HERO_START_X;
+	this.y = HERO_START_Y;
+	this.hasHeart = false;
+
 }
 
-Player.prototype.minusLife = function() {
+Hero.prototype.minusLife = function() {
 	if (this.life == 1) {
 		this.life = 0;
 	} else {
@@ -141,14 +147,14 @@ Player.prototype.minusLife = function() {
 	}
 }
 
-Player.prototype.update = function(dt) {
+Hero.prototype.update = function(dt) {
 	if (this.y < 50) {
 		this.resetPosition();
 		this.minusLife();
 	}
 }
 
-Player.prototype.render = function() {
+Hero.prototype.render = function() {
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 	var i = 0;
 	for (l = 0; l < this.life; l ++) {
@@ -157,72 +163,81 @@ Player.prototype.render = function() {
 	}
 }
 
-Player.prototype.handleInput = function(key) {
+Hero.prototype.handleInput = function(key) {
 	switch (key) {
 		case "up":
 			if (this.y < 90) {
 				console.log('too high');
 			} else {
-				this.y = this.y - PLAYER_MOVE_Y;
+				this.y = this.y - HERO_MOVE_Y;
 			}
 			break;
 		case "down":
 			if (this.y > 482) {
 				console.log("ya too low");
 			} else {
-				this.y = this.y + PLAYER_MOVE_Y;
+				this.y = this.y + HERO_MOVE_Y;
 			}
 			break;
 		case "left":
 			if (this.x < 3) {
 				console.log("ya too left")
 			} else {
-				this.x = this.x - PLAYER_MOVE_X;
+				this.x = this.x - HERO_MOVE_X;
 			}
 			break;
 		case "right":
 			if (this.x > 606) {
 				console.log("ya too right");
 			} else {
-				this.x = this.x + PLAYER_MOVE_X;
+				this.x = this.x + HERO_MOVE_X;
 			}
 			break;
+		// case "pause":
+		// 	alert("Game paused. Click OK to resume.");
 		default:
 			return;
 	}
 }
 
-allEnemies = [];
-var enemy1 = new Enemy(),
-		enemy2 = new Enemy(),
-		enemy3 = new Enemy(),
-		enemy4 = new Enemy(),
-		enemy5 = new Enemy(),
-		enemy6 = new Enemy(),
-		enemy7 = new Enemy();
+allBugs = [];
+var bug1 = new Bug(),
+		bug2 = new Bug(),
+		bug3 = new Bug(),
+		bug4 = new Bug(),
+		bug5 = new Bug(),
+		bug6 = new Bug(),
+		bug7 = new Bug(),
+		// bug8 = new Bug(),
+		// bug9 = new Bug(),
+		bug10 = new Bug();
 
-allEnemies.push(
-	enemy1,
-	enemy2,
-	enemy3,
-	enemy4,
-	enemy5,
-	enemy6,
-	enemy7
+allBugs.push(
+	bug1,
+	bug2,
+	bug3,
+	bug4,
+	bug5,
+	bug6,
+	bug7,
+	// bug8,
+	// bug9,
+	bug10
 );
 
 var heart = new Heart();
-var player = new Player(PLAYER_START_X, PLAYER_START_Y, PLAYER_START_LIFE);
+var hero = new Hero(HERO_START_X, HERO_START_Y, HERO_START_LIFE);
 var princess = new Princess;
 var rival = new Rival;
 
-document.addEventListener('keydown', function(e) {
+document.addEventListener('keyup', function(e) {
 	var allowedKeys = {
 		37: 'left',
 		38: 'up',
 		39: 'right',
 		40: 'down',
-		32: 'space'
+		32: 'space',
+		80: 'pause',
 	};
-	player.handleInput(allowedKeys[e.keyCode]);
+	hero.handleInput(allowedKeys[e.keyCode]);
 });

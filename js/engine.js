@@ -31,20 +31,18 @@ var Engine = (function(global) {
 
 	function update(dt) {
 		updateEntities(dt);
-		checkCollisions(dt);
+		bugCollide(dt);
 		collectHeart(dt);
 		deliverHeart(dt);		
 		youLose(dt);
 		youWin(dt);
-
-
 	}
 
 	function updateEntities(dt) {
-		allEnemies.forEach(function(enemy) {
-			enemy.update(dt);
+		allBugs.forEach(function(bug) {
+			bug.update(dt);
 		});
-		player.update(dt);
+		hero.update(dt);
 		rival.update(dt);
 	}
 
@@ -55,32 +53,31 @@ var Engine = (function(global) {
 		}
 	}
 
-	function checkCollisions() {
-		allEnemies.forEach(function(enemy) {
-			if (collide(player, enemy)) {
-				player.resetPosition();
+	function bugCollide() {
+		allBugs.forEach(function(enemy) {
+			if (collide(hero, enemy)) {
+				hero.resetPosition();
 				heart.reset();
-				player.minusLife();
+				hero.minusLife();
 			}
 		});
 	}
 
 	function collectHeart() {
-		if (collide(player, heart)) {
-			player.hasHeart = true;
+		if (collide(hero, heart)) {
+			hero.hasHeart = true;
 			heart.hide();
-			player.sprite = 'images/hero-has-heart.png';
-			console.log(player.hasHeart);
+			hero.sprite = 'images/hero-has-heart.png';
 		}
 	}
 
 	function deliverHeart() {
-		if (player.hasHeart === true) {
-			if (collide(princess, player)) {
+		if (hero.hasHeart === true) {
+			if (collide(princess, hero)) {
 				console.log('delivered love');
 				princess.heartCount += 1;
 				console.log("princess has: " + princess.heartCount + " hearts");
-				player.resetPosition();
+				hero.resetPosition();
 				heart.reset();
 			}
 		}
@@ -108,49 +105,57 @@ var Engine = (function(global) {
 	}
 
 	function renderEntities() {
-		allEnemies.forEach(function(enemy) {
+		allBugs.forEach(function(enemy) {
 			enemy.render();
 		});
-		player.render();
+		hero.render();
 		princess.render();
 		rival.render();
 		heart.render();
-		// player.lifeCountRender();
+		// hero.lifeCountRender();
 	}
 
 	function youWin() {
 		if (princess.heartCount === HEARTS_TO_WIN) {
-			allEnemies = [];
+			allBugs = [];
 			heart.hide();
-			player.x = 160;
-			player.y = 70;
-			player.sprite = 'images/hero-win.png';
+			hero.x = 160;
+			hero.y = 70;
+			hero.sprite = 'images/hero-win.png';
 			princess.sprite = 'images/princess-win.png';
 			rival.sprite = rival.loseSprite;
-			console.log('WIN');
 			rival.speed = 0;
+			ctx.fillText("You saved your love!", 500, 500);
 		}
-
 	}
 
 	function youLose() {
-		if (collide(rival, princess) || player.life === 0) {
-			allEnemies = [];
+		if (collide(rival, princess) || hero.life === 0) {
+			allBugs = [];
 			rival.speed = 0;
 			rival.x = 160;
 			rival.y = 70;
-			player.sprite = player.loseSprite;
-			player.x = 303;
-			player.y = 200;
+			hero.sprite = hero.loseSprite;
+			hero.x = 303;
+			hero.y = 200;
 			heart.hide();
 			princess.sprite = 'images/princess-win.png';
-			console.log("LOSE");
 		}		
-
 	}
 
 	function reset() {
+		// princess.heartCount = 0;
+		// rival.resetPosition();
+		// hero.resetPosition();
+
+		console.log('reset called');
 	}
+
+	// document.getElementById('reset').addEventListener('click', function(event) {
+	// 	hero.resetPosition();
+	// 	rival.resetPosition();
+	// 	princess.heartCount = 0;
+	// });
 
 	Resources.load([
 		'images/stone-block.png',
