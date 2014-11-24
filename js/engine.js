@@ -46,6 +46,12 @@ var Engine = (function(global) {
 		rival.update(dt);
 	}
 
+	/**
+	*	Computes whether two entities collide
+	* @param {object} arg1 is instance of an object entity
+	* @param {object} arg2 is instance of an object entity
+	* @return {boolean}
+	*/
 	function collide(entity1, entity2) {
 		var proximity = 50;
 		if (Math.abs(entity1.x - entity2.x) < proximity && Math.abs(entity1.y - entity2.y) < proximity) {
@@ -53,6 +59,10 @@ var Engine = (function(global) {
 		}
 	}
 
+	/**
+	* Checks if bugs collide with hero
+	* 
+	*/
 	function bugCollide() {
 		allBugs.forEach(function(enemy) {
 			if (collide(hero, enemy)) {
@@ -61,26 +71,26 @@ var Engine = (function(global) {
 				hero.minusLife();
 			}
 		});
+		return;
 	}
 
 	function collectHeart() {
 		if (collide(hero, heart)) {
 			hero.hasHeart = true;
+			hero.sprite = hero.hasHeartSprite;
 			heart.hide();
-			hero.sprite = 'images/hero-has-heart.png';
 		}
 	}
 
 	function deliverHeart() {
 		if (hero.hasHeart === true) {
 			if (collide(princess, hero)) {
-				console.log('delivered love');
 				princess.heartCount += 1;
-				console.log("princess has: " + princess.heartCount + " hearts");
 				hero.resetPosition();
 				heart.reset();
 			}
 		}
+		return;
 	}
 
 	function render() {
@@ -112,20 +122,24 @@ var Engine = (function(global) {
 		princess.render();
 		rival.render();
 		heart.render();
-		// hero.lifeCountRender();
 	}
 
 	function youWin() {
 		if (princess.heartCount === HEARTS_TO_WIN) {
 			if (rival.x < 400) {
+				/**
+				* When the game is won, if the rival is too 
+				* 	close to the princess, draw him at some 
+				*		distance away from the hero and princess.
+				*/
 				rival.x = hero.x + 100;
 			}			
 			allBugs = [];
 			heart.hide();
 			hero.x = 160;
 			hero.y = 70;
-			hero.sprite = 'images/hero-win.png';
-			princess.sprite = 'images/princess-win.png';
+			hero.sprite = hero.winSprite;
+			princess.sprite = princess.winSprite;
 			rival.sprite = rival.loseSprite;
 			rival.speed = 0;
 		}
@@ -141,8 +155,8 @@ var Engine = (function(global) {
 			hero.x = 303;
 			hero.y = 200;
 			heart.hide();
-			princess.sprite = 'images/princess-win.png';
-		}		
+			princess.sprite = princess.winSprite;
+		}
 	}
 
 	function reset() {

@@ -1,3 +1,11 @@
+
+/**
+* Variables used in multiple functions in 
+*		various documents
+* @type {number}
+* @type {Array.<number>}
+* @const
+*/
 var BUG_SPEEDS = [150,200,250,300,350,500,650,700,1000],
 		BUG_START_Y = [145,230, 315, 395],
 		BUG_START_X = -60,
@@ -11,13 +19,17 @@ var BUG_SPEEDS = [150,200,250,300,350,500,650,700,1000],
 		RIVAL_SPEED = 17,
 		HEART_X = [101, 202, 303, 404, 505],
 		HEART_Y = [160, 240, 320, 400],
-		HEARTS_TO_WIN = 3;
+		HEARTS_TO_WIN = 5;
 
 var randomNumber = function(range) {
 	return Math.floor(Math.random()*range);
 };
 
-// Heart
+/**
+*	Creates the heart object to be collected and 
+*		delivered to the princess
+* @constructor
+*/
 var Heart = function() {
 	this.sprite = 'images/heart.png';
 	this.x = HEART_X[randomNumber(HEART_X.length)];
@@ -28,9 +40,13 @@ Heart.prototype.render = function() {
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
+/**
+* Move the heart off canvas when hero.hasHeart,
+* 	or when game is finished.
+*/
 Heart.prototype.hide = function() {
-	this.x = -500;
-	this.y = -500;
+	this.x = -1000;
+	this.y = -1000;
 }
 
 Heart.prototype.reset = function() {
@@ -38,13 +54,15 @@ Heart.prototype.reset = function() {
 	this.y = HEART_Y[randomNumber(HEART_Y.length)];
 }
 
-
-
-// Princess
+/**
+*	Creates the Princess object
+* 	the person to be saved from Rival
+* @constructor
+*/
 var Princess = function() {
 	this.sprite = 'images/princess.png';
 	this.heartSprite = 'images/heart_small.png';
-	this.winSprite = 'images/princess-win';
+	this.winSprite = 'images/princess-win.png';
 	this.x = 101;
 	this.y = 70;
 	this.heartCount = 0;
@@ -54,12 +72,16 @@ Princess.prototype.render = function () {
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);	
 	var i = 0;
 	for (h = 0; h < this.heartCount; h++) {
-		ctx.drawImage(Resources.get(this.heartSprite), this.x + 30 + i, this.y + 120);
+		ctx.drawImage(Resources.get(this.heartSprite), this.x + 20 + i, this.y + 120);
 		i = i + 11;
 	}
 }
 
-// Rival
+/**
+* Creates the rival against whom the hero
+* 	competes for the princess
+* @constructor
+*/
 var Rival = function() {
 	this.sprite = 'images/rival.png';
 	this.trueIntentionSprite = 'images/rival-true-intention.png';
@@ -72,6 +94,10 @@ var Rival = function() {
 Rival.prototype.render = function() {
 	var sprite = this.sprite;
 	if (this.x < 320) {
+		/**
+		* rival.sprite changes to different image
+		* when at rival.x < 320
+		*/
 		sprite = this.trueIntentionSprite;
 	} 
 	if (princess.heartCount === HEARTS_TO_WIN) {
@@ -90,7 +116,11 @@ Rival.prototype.resetPosition = function() {
 	this.speed = RIVAL_SPEED;
 }
 
-// Bug
+/**
+* Bug objects move across the screen
+* 	and collides with the hero
+* @constructor
+*/
 var Bug = function() {
 	this.sprite = 'images/enemy-bug.png';
 	this.x = BUG_START_X;
@@ -119,32 +149,37 @@ Bug.prototype.render = function() {
 	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 }
 
-// Hero
+/**
+* Hero saves the princess before Rival
+* 	gets to her
+* @constructor
+*/
 var Hero = function(x,y,life) {
 	this.sprite = 'images/hero.png';
+	this.winSprite = 'images/hero-win.png';
 	this.loseSprite = 'images/hero-lose.png';
 	this.lifeSprite = 'images/hero-small.png';
+	this.hasHeartSprite = 'images/hero-has-heart.png';
 	this.x = x;
 	this.y = y;
 	this.life = life;
 	this.hasHeart = false;
 }
 
+/**
+* Hero resets position and state after
+* 	colliding with bug or delivering heart
+*		to princess
+*/
 Hero.prototype.resetPosition = function() {
-	this.sprite = 'images/hero.png';
+	this.sprite = 'images/hero.png';	
 	this.x = HERO_START_X;
 	this.y = HERO_START_Y;
 	this.hasHeart = false;
-
 }
 
 Hero.prototype.minusLife = function() {
-	if (this.life == 1) {
-		this.life = 0;
-	} else {
-		this.life = this.life - 1;
-		console.log(this.life);
-	}
+	this.life = this.life - 1;
 }
 
 Hero.prototype.update = function(dt) {
@@ -163,6 +198,9 @@ Hero.prototype.render = function() {
 	}
 }
 
+/**
+* 
+*/
 Hero.prototype.handleInput = function(key) {
 	switch (key) {
 		case "up":
@@ -239,5 +277,8 @@ document.addEventListener('keydown', function(e) {
 		32: 'space',
 		80: 'pause',
 	};
+	if (e.keyCode === 38 || e.keyCode === 40){
+		e.preventDefault();
+	}
 	hero.handleInput(allowedKeys[e.keyCode]);
 });
