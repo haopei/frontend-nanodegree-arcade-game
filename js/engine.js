@@ -16,10 +16,9 @@ var Engine = (function(global) {
 
 		update(dt);
 		render();
+		console.log("main is still running");
 
 		lastTime = now;
-		// The Window.requestAnimationFrame() method tells the browser that you wish to perform an animation and requests that the browser call a specified function to update an animation before the next repaint. The method takes as an argument a callback to be invoked before the repaint.
-		// main() is called before the browser repaints. 
 		win.requestAnimationFrame(main);
 	};
 
@@ -48,8 +47,8 @@ var Engine = (function(global) {
 
 	/**
 	*	Computes whether two entities collide
-	* @param {object} arg1 is instance of an object entity
-	* @param {object} arg2 is instance of an object entity
+	* @param {object} arg1 is instance of first object entity
+	* @param {object} arg2 is instance of second object entity
 	* @return {boolean}
 	*/
 	function collide(entity1, entity2) {
@@ -60,20 +59,25 @@ var Engine = (function(global) {
 	}
 
 	/**
-	* Checks if bugs collide with hero
-	* 
+	* When bug and hero instances collide,
+	* 	reset hero position,
+	*		minus hero.life by 1
+	*		reset heart instance position randomly
 	*/
 	function bugCollide() {
 		allBugs.forEach(function(enemy) {
 			if (collide(hero, enemy)) {
 				hero.resetPosition();
-				heart.reset();
+				heart.resetPosition();
 				hero.minusLife();
 			}
 		});
-		return;
 	}
 
+	/**
+	* When hero and heart instances collide,
+	* 	set hero.hasHeart = true
+	*/
 	function collectHeart() {
 		if (collide(hero, heart)) {
 			hero.hasHeart = true;
@@ -82,15 +86,19 @@ var Engine = (function(global) {
 		}
 	}
 
+	/**
+	* While hero.hasHeart = true,
+	* 	if hero and princess instances collide,
+	*		set princess.heartCount += 1
+	*/
 	function deliverHeart() {
 		if (hero.hasHeart === true) {
 			if (collide(princess, hero)) {
 				princess.heartCount += 1;
 				hero.resetPosition();
-				heart.reset();
+				heart.resetPosition();
 			}
 		}
-		return;
 	}
 
 	function render() {
@@ -114,6 +122,9 @@ var Engine = (function(global) {
 		renderEntities();
 	}
 
+	/**
+	* Renders all object instances required for gameplay.
+	*/
 	function renderEntities() {
 		allBugs.forEach(function(enemy) {
 			enemy.render();
@@ -124,6 +135,11 @@ var Engine = (function(global) {
 		heart.render();
 	}
 
+	/**
+	* Listens for the winning conditions of the game
+	* 	and changes sprite images for various entities
+	* 	in the game.
+	*/
 	function youWin() {
 		if (princess.heartCount === HEARTS_TO_WIN) {
 			if (rival.x < 400) {
@@ -145,6 +161,11 @@ var Engine = (function(global) {
 		}
 	}
 
+	/**
+	*	Listens for losing conditions of the game and,
+	* 	changes sprite images for various entities
+	* 	in the game.
+	*/ 
 	function youLose() {
 		if (collide(rival, princess) || hero.life === 0) {
 			allBugs = [];
@@ -160,18 +181,8 @@ var Engine = (function(global) {
 	}
 
 	function reset() {
-		// princess.heartCount = 0;
-		// rival.resetPosition();
-		// hero.resetPosition();
-
-		console.log('reset called');
+		// noop
 	}
-
-	// document.getElementById('reset').addEventListener('click', function(event) {
-	// 	hero.resetPosition();
-	// 	rival.resetPosition();
-	// 	princess.heartCount = 0;
-	// });
 
 	Resources.load([
 		'images/stone-block.png',
@@ -194,10 +205,6 @@ var Engine = (function(global) {
 		'images/gem.png'
 	]);
 	Resources.onReady(init);
-
-  // function onReady(func) {
-  //     readyCallbacks.push(func);
-  // }
 
 	global.ctx = ctx;
 })(this);
