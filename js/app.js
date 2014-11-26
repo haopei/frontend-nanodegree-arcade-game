@@ -93,7 +93,7 @@ var Princess = function() {
 * Draws sprites for the princess entity and its heartCount number
 */
 Princess.prototype.render = function () {
-	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);	
+	ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
 	var i = 0;
 	for (h = 0; h < this.heartCount; h++) {
 		ctx.drawImage(Resources.get(this.heartSprite), this.x + 20 + i, this.y + 120);
@@ -227,7 +227,7 @@ var Hero = function(x,y,life) {
 *		to princess
 */
 Hero.prototype.resetPosition = function() {
-	this.sprite = 'images/hero.png';	
+	this.sprite = 'images/hero.png';
 	this.x = HERO_START_X;
 	this.y = HERO_START_Y;
 	this.hasHeart = false;
