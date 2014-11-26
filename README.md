@@ -39,4 +39,9 @@ Collect and deliver enough hearts to the princess before it's too late.
 
 ##References
 
-Found some help by viewing the repositories of fellow students: Ben Halperin, Sheryl Lun, Kevin Mayo.
+- [Window.requestAnimationFrame | MDN](https://developer.mozilla.org/en/docs/Web/API/window.requestAnimationFrame)
+- [What makes a good game?](http://serc.carleton.edu/introgeo/games/goodgame.html)
+- [Dive into HTML5 Canvas](http://diveintohtml5.info/canvas.html)
+- [Canvas | MDN](https://developer.mozilla.org/en-US/docs/Web/API/Canvas_API)
+
+- Found some help by viewing the repositories of fellow students: [Ben Halperin](https://github.com/bahalps/frontend-nanodegree-arcade-game), [Sheryl Lun](https://github.com/sheryllun/Project3-BugAvoider), [Kevin Mayo](https://github.com/kevdonk/frontend-nanodegree-arcade-game)
