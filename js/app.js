@@ -9,7 +9,7 @@
 var BUG_SPEEDS = [150,200,250,300,350,500,650,700,1000],
 		BUG_START_Y = [145,230, 315, 395],	// start position ranges of bug entities
 		BUG_START_X = -60,
-		NUM_OF_BUGS = 8,
+		NUM_OF_BUGS = 5,
 		HERO_START_LIFE = 3,
 		HERO_START_X = 0,
 		HERO_START_Y = 488,
